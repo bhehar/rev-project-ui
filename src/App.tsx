@@ -6,7 +6,7 @@ import './App.css'
 import mockPermData from './data/mock-permissions.json';
 
 // string literal union type
-type Role = "admin" | "billing-manager" | "sales-manager"
+type Role = "admin" | "billing-manager" | "sales-manager";
 const roleLabels = {
   "admin": "Admin",
   "billing-manager": "Billing Manager",
@@ -22,9 +22,10 @@ interface Permission {
   "permissions": PermissionCategories;
 }
 export default function App() {
-  const [role, setRole] = useState<Role>("admin");
+  const [role, setRole] = useState<Role | null>(null);
   const [rolePerms, setRolePerms] = useState<Permission | null>(null);
   const mockPermissions = mockPermData as Permission[];
+
   function handleRoleSelection(selectedRole: Role): void {
     setRole(selectedRole)
     console.log(selectedRole);
@@ -44,20 +45,31 @@ export default function App() {
 }
 
 interface RoleDropdownProps {
-  currRole: Role;
+  currRole: Role | null;
   selectRole: (role: Role) => void;
 }
 
+// function RoleDropdown({ currRole, selectRole }: RoleDropdownProps) {
 function RoleDropdown({ currRole, selectRole }: RoleDropdownProps) {
+  let selectedRole: JSX.Element = <>Select a Role</>
+  if (currRole) {
+    selectedRole = <>{roleLabels[currRole]}</>
+  }
+
+  const ddOptions: JSX.Element[] = [];
+  for (const [role, label] of Object.entries(roleLabels)) {
+    ddOptions.push(
+      <Dropdown.Item key={role} onClick={() => selectRole(role)}>{label}</Dropdown.Item>
+    )
+  }
+
   return (
     <Dropdown>
       <Dropdown.Toggle variant='success' id='dropdown-basic'>
-        {roleLabels[currRole]}
+        {selectedRole}
       </Dropdown.Toggle>
       <Dropdown.Menu>
-        <Dropdown.Item onClick={() => selectRole('admin')}>{roleLabels.admin}</Dropdown.Item>
-        <Dropdown.Item onClick={() => selectRole('billing-manager')}>{roleLabels['billing-manager']}</Dropdown.Item>
-        <Dropdown.Item onClick={() => selectRole('sales-manager')}>{roleLabels['sales-manager']}</Dropdown.Item>
+        {ddOptions}
       </Dropdown.Menu>
     </Dropdown>
   )
