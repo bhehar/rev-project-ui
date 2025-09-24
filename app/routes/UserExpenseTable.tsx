@@ -1,6 +1,6 @@
 import { useEffect, type JSX } from 'react';
-import { type Expense } from "src/types/expense.ts";
-import mockExpenseData from 'src/data/mockExpenses.json';
+import { type Expense } from "../types/expense";
+import mockExpenseData from '../data/mockExpenses.json';
 
 import Table from 'react-bootstrap/Table';
 

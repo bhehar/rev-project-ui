@@ -1,0 +1,1 @@
+import{w as n,p as e}from"./chunk-B7RQU5TL-Bn6hr5Ld.js";const s=n(function(){return e.jsx("div",{children:e.jsx("h2",{children:"Hello! You will create a new expense ticket heere"})})});export{s as default};

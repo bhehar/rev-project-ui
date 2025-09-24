@@ -1,7 +1,6 @@
 // import { useEffect, type JSX } from 'react';
 
 import './App.css'
-import UserExpenseTable from 'src/components/UserExpenseTable.tsx';
 
 // string literal union type
 // type Role = "admin" | "billing-manager" | "sales-manager";
@@ -43,7 +42,7 @@ export default function App() {
   // )
   return (
     <div id='app'>
-      <UserExpenseTable />
+      <h2>Welcome to Initech's Expense Reporting Portal</h2>
     </div>
   )
 }
