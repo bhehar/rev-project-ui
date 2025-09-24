@@ -1,0 +1,20 @@
+[
+  {
+    "id": "user1",
+    "firstName": "Alice",
+    "lastName": "Johnson",
+    "employeeId": "EMP001",
+    "manager": "John Smith",
+    "email": "alice.johnson@company.com",
+    "jobTitle": "Software Engineer"
+  },
+  {
+    "id": "user2",
+    "firstName": "Bob",
+    "lastName": "Chen",
+    "employeeId": "EMP002",
+    "manager": "John Smith",
+    "email": "bob.chen@company.com",
+    "jobTitle": "Product Manager"
+  }
+]

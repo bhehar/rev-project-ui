@@ -1,114 +1,123 @@
-import { useState, type JSX } from 'react';
-import Dropdown from 'react-bootstrap/Dropdown';
-import Table from 'react-bootstrap/Table';
+// import { useEffect, type JSX } from 'react';
 
 import './App.css'
-import mockPermData from './data/mock-permissions.json';
+import UserExpenseTable from 'src/components/UserExpenseTable.tsx';
 
 // string literal union type
-type Role = "admin" | "billing-manager" | "sales-manager";
-const roleLabels = {
-  "admin": "Admin",
-  "billing-manager": "Billing Manager",
-  "sales-manager": "Sales Manager",
-}
+// type Role = "admin" | "billing-manager" | "sales-manager";
+// const roleLabels: Record<Role, string> = {
+//   "admin": "Admin",
+//   "billing-manager": "Billing Manager",
+//   "sales-manager": "Sales Manager",
+// }
 
-type AccessLevel = 0 | 1 | 2 | 3;
-type PermissionCategories = Record<string, Record<string, AccessLevel>>;
+// type AccessLevel = 0 | 1 | 2 | 3;
+// type PermissionCategories = Record<string, Record<string, AccessLevel>>;
 
-interface Permission {
-  "id": number;
-  "role": Role;
-  "permissions": PermissionCategories;
-}
+// interface Permission {
+//   "id": number;
+//   "role": Role;
+//   "permissions": PermissionCategories;
+// }
 export default function App() {
-  const [role, setRole] = useState<Role | null>(null);
-  const [rolePerms, setRolePerms] = useState<Permission | null>(null);
-  const mockPermissions = mockPermData as Permission[];
+  // const [role, setRole] = useState<Role | null>(null);
+  // const [rolePerms, setRolePerms] = useState<Permission | null>(null);
+  // const mockPermissions = mockPermData as Permission[];
 
-  function handleRoleSelection(selectedRole: Role): void {
-    setRole(selectedRole)
-    console.log(selectedRole);
-    const perms = mockPermissions.find(permission => permission.role === selectedRole);
-    if (perms) {
-      console.log(perms);
-      setRolePerms(perms)
-    }
-  }
+  // function handleRoleSelection(selectedRole: Role): void {
+  //   setRole(selectedRole)
+  //   console.log(selectedRole);
+  //   const perms = mockPermissions.find(permission => permission.role === selectedRole);
+  //   if (!perms) {
+  //     console.log("could not find data for role: ", selectedRole);
+  //     return;
+  //   }
+  //   setRolePerms(perms)
+  // }
 
+  // return (
+  //   <div id='app'>
+  //     <RoleDropdown currRole={role} selectRole={handleRoleSelection} />
+  //     <PermissionTable currRolePerms={rolePerms} />
+  //   </div>
+  // )
   return (
     <div id='app'>
-      <RoleDropdown currRole={role} selectRole={handleRoleSelection} />
-      <PermissionTable currRolePerms={rolePerms} />
+      <UserExpenseTable />
     </div>
   )
 }
 
-interface RoleDropdownProps {
-  currRole: Role | null;
-  selectRole: (role: Role) => void;
-}
+// interface RoleDropdownProps {
+//   currRole: Role | null;
+//   selectRole: (role: Role) => void;
+// }
 
+// // function RoleDropdown({ currRole, selectRole }: RoleDropdownProps) {
 // function RoleDropdown({ currRole, selectRole }: RoleDropdownProps) {
-function RoleDropdown({ currRole, selectRole }: RoleDropdownProps) {
-  let selectedRole: JSX.Element = <>Select a Role</>
-  if (currRole) {
-    selectedRole = <>{roleLabels[currRole]}</>
-  }
+//   let selectedRole: JSX.Element = <>Select a Role</>
+//   if (currRole) {
+//     selectedRole = <>{roleLabels[currRole]}</>
+//   }
 
-  const ddOptions: JSX.Element[] = [];
-  for (const [role, label] of Object.entries(roleLabels)) {
-    ddOptions.push(
-      <Dropdown.Item key={role} onClick={() => selectRole(role)}>{label}</Dropdown.Item>
-    )
-  }
+//   // const dddOptions: JSX.Element[] = [];
+//   // for (const [role, label] of Object.entries(roleLabels)) {
+//   //   ddOptions.push(
 
-  return (
-    <Dropdown>
-      <Dropdown.Toggle variant='success' id='dropdown-basic'>
-        {selectedRole}
-      </Dropdown.Toggle>
-      <Dropdown.Menu>
-        {ddOptions}
-      </Dropdown.Menu>
-    </Dropdown>
-  )
-}
+//   //     <Dropdown.Item key={role} onClick={() => selectRole(role)}>{label}</Dropdown.Item>
+//   //   )
+//   // }
+//   const ddOptions = Object.entries(roleLabels).map(([role, label]) => {
+//     return <Dropdown.Item key={role} onClick={() => selectRole(role)}>{label}</Dropdown.Item>
+//   });
 
-interface PermissionTableProps {
-  currRolePerms: Permission | null;
-}
 
-function PermissionTable({ currRolePerms }: PermissionTableProps) {
+//   return (
+//     <Dropdown>
+//       <Dropdown.Toggle variant='success' id='dropdown-basic'>
+//         {selectedRole}
+//       </Dropdown.Toggle>
+//       <Dropdown.Menu>
+//         {ddOptions}
+//       </Dropdown.Menu>
+//     </Dropdown>
+//   )
+// }
 
-  const tableData: JSX.Element[] = [];
+// interface PermissionTableProps {
+//   currRolePerms: Permission | null;
+// }
 
-  if (currRolePerms) {
-    for (const [category, permObj] of Object.entries(currRolePerms?.permissions)) {
-      // console.log(category);
-      for (const [module, accessLevel] of Object.entries(permObj)) {
-        tableData.push(
-          <tr key={`${category}-${module}`}>
-            <td>{category}</td>
-            <td>{module}</td>
-            <td>{accessLevel}</td>
-          </tr>
-        );
-      }
-    }
-  };
-  return (
-    <Table striped bordered hover>
-      <thead>
-        <tr>
-          <th>Category</th>
-          <th>Module</th>
-          <th>Access Level</th>
-        </tr>
-      </thead>
-      <tbody>
-        {tableData}
-      </tbody>
-    </Table>
-  )
-}
+// function PermissionTable({ currRolePerms }: PermissionTableProps) {
+
+//   const tableData: JSX.Element[] = [];
+
+//   if (currRolePerms) {
+//     for (const [category, permObj] of Object.entries(currRolePerms?.permissions)) {
+//       // console.log(category);
+//       for (const [module, accessLevel] of Object.entries(permObj)) {
+//         tableData.push(
+//           <tr key={`${category}-${module}`}>
+//             <td>{category}</td>
+//             <td>{module}</td>
+//             <td>{accessLevel}</td>
+//           </tr>
+//         );
+//       }
+//     }
+//   };
+//   return (
+//     <Table striped bordered hover>
+//       <thead>
+//         <tr>
+//           <th>Category</th>
+//           <th>Module</th>
+//           <th>Access Level</th>
+//         </tr>
+//       </thead>
+//       <tbody>
+//         {tableData}
+//       </tbody>
+//     </Table>
+//   )
+// }
