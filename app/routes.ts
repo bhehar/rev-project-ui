@@ -7,6 +7,8 @@ import {
 export default [
   index("./Welcome.tsx"),
   route("/user/create", "./routes/ExpenseEntry.tsx"),
-  route("/user/view", "./routes/UserExpenseTable.tsx")
+  route("/user/details", "./routes/UserExpenseTable.tsx"),
+  route("/admin/expense", "./routes/AdminExpenseTable.tsx"),
+  route("/admin/details", "./routes/AdminExpenseDetails.tsx")
   // pattern ^           ^ module file
 ] satisfies RouteConfig;

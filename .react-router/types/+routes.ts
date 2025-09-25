@@ -16,7 +16,13 @@ type Pages = {
   "/user/create": {
     params: {};
   };
-  "/user/view": {
+  "/user/details": {
+    params: {};
+  };
+  "/admin/expense": {
+    params: {};
+  };
+  "/admin/details": {
     params: {};
   };
 };
@@ -24,7 +30,7 @@ type Pages = {
 type RouteFiles = {
   "root.tsx": {
     id: "root";
-    page: "/" | "/user/create" | "/user/view";
+    page: "/" | "/user/create" | "/user/details" | "/admin/expense" | "/admin/details";
   };
   "./Welcome.tsx": {
     id: "Welcome";
@@ -36,6 +42,14 @@ type RouteFiles = {
   };
   "./routes/UserExpenseTable.tsx": {
     id: "routes/UserExpenseTable";
-    page: "/user/view";
+    page: "/user/details";
+  };
+  "./routes/AdminExpenseTable.tsx": {
+    id: "routes/AdminExpenseTable";
+    page: "/admin/expense";
+  };
+  "./routes/AdminExpenseDetails.tsx": {
+    id: "routes/AdminExpenseDetails";
+    page: "/admin/details";
   };
 };

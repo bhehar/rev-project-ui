@@ -1,4 +1,5 @@
 
+export type ExpenseCategory = 'transportation' | 'food' | 'lodging' | 'equipment' | 'other';
 
 export interface Expense {
     id: string,
@@ -6,10 +7,10 @@ export interface Expense {
     status: 'new' | 'pending' | 'approved' | 'denied',
     createdAt: string,
     updatedAt: string,
-    category: 'transportation' | 'food' | 'lodging' | 'equipment' | 'other',
+    category: ExpenseCategory,
     amount: number,
-    description: string | null,
-    comment: string | null
+    description: string,
+    comment: string
 }
 
 /*
