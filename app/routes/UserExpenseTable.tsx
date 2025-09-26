@@ -1,8 +1,11 @@
 import { useEffect, type JSX } from 'react';
+
+import { Button, Table } from 'react-bootstrap';
+
 import { type Expense } from "../types/expense";
 import mockExpenseData from '../data/mockExpenses.json';
 
-import Table from 'react-bootstrap/Table';
+import './userExpenseTable.css';
 
 export default function UserExpenseTable() {
     // const rawJsonData = mockExpenseData;
@@ -21,25 +24,35 @@ export default function UserExpenseTable() {
                 <td>${exp.amount}</td>
                 <td>{exp.createdAt}</td>
                 <td>{exp.updatedAt}</td>
+                <td>
+                    <Button href='/user/details' variant='secondary'>Edit</Button>
+                </td>
             </tr>
         )
     })
 
     return (
-        <Table striped bordered hover>
-            <thead>
-                <tr>
-                    <th>Employee ID</th>
-                    <th>Status</th>
-                    <th>Category</th>
-                    <th>Amount</th>
-                    <th>Created At</th>
-                    <th>Update At</th>
-                </tr>
-            </thead>
-            <tbody>
-                {tableData}
-            </tbody>
-        </Table>
+        <>
+            <header id="userTableHeader">
+                <h1>Existing Expenses</h1>
+                <Button href='/user/details' className='my-2 mx-1' variant="primary">Create New</Button>
+            </header>
+            <Table striped bordered hover>
+                <thead>
+                    <tr>
+                        <th>Employee ID</th>
+                        <th>Status</th>
+                        <th>Category</th>
+                        <th>Amount</th>
+                        <th>Created At</th>
+                        <th>Update At</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {tableData}
+                </tbody>
+            </Table>
+        </>
     )
 }

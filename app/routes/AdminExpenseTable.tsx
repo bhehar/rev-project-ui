@@ -12,7 +12,7 @@ export default function AdminExpenseTable() {
         console.log("this is the log from  Admin Expense Table");
     }, [])
 
-    function handleApprove() {
+    function handleApprove(id: string) {
         console.log('approve button clicked');
     }
 
@@ -29,7 +29,7 @@ export default function AdminExpenseTable() {
                 <td>{exp.createdAt}</td>
                 <td>{exp.updatedAt}</td>
                 <td>
-                    <Button onClick={handleApprove} size="sm" variant="success">Approve</Button>
+                    <Button onClick={() => handleApprove(exp.id)} size="sm" variant="success">Approve</Button>
                     <Button onClick={handleDeny} size="sm" variant="danger">Deny</Button>
                     <Button href="/admin/details" size="sm" variant="secondary">Comment</Button>
                 </td>
