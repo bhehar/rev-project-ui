@@ -8,7 +8,7 @@ import {
 export default [
   layout("./layouts/nav.tsx", [
     index("./Welcome.tsx"),
-    route("/user/details", "./routes/ExpenseEntry.tsx"),
+    route("/user/details", "./routes/UserExpenseDetails.tsx"),
     route("/user/table", "./routes/UserExpenseTable.tsx"),
     route("/admin/table", "./routes/AdminExpenseTable.tsx"),
     route("/admin/details", "./routes/AdminExpenseDetails.tsx"),

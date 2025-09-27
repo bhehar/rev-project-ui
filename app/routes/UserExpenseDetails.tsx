@@ -1,8 +1,9 @@
 import { useState } from 'react';
+import { useLocation } from "react-router";
 import { Button, Col, Form, Row } from 'react-bootstrap';
 
 // import { type JSX } from 'react';
-import { type ExpenseCategory } from '../types/expense.ts';
+import { type Expense, type ExpenseCategory } from '../types/expense.ts';
 
 const categoryDisplay: Record<ExpenseCategory, string> = {
     'transportation': "Transportation",
@@ -12,20 +13,28 @@ const categoryDisplay: Record<ExpenseCategory, string> = {
     'other': 'Other',
 };
 
-export default function ExpenseEntry() {
+export default function UserExpenseDetails() {
     console.log("expense entry component rendered");
+    const location = useLocation();
+    const expense = location.state?.data as Expense;
+
+    if (expense) {
+        console.log("expense in UserExpenseDetails", expense);
+    }
     // const [validated, setValidated] = useState(false);
     const [formData, setFormData] = useState({
-        category: '',
-        amount: '',
-        description: ''
+        category: expense?.category,
+        amount: expense?.amount,
+        description: expense?.description
     });
 
 
-    function handleCategoryChange(e: React.ChangeEvent<HTMLSelectElement>): void {
+    function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>): void {
+        console.log("inside handleCategoryChange");
+        const {name, value} = e.target;
         setFormData({
             ...formData,
-            category: e.target.value
+            [name]: value
         });
     }
 
@@ -34,7 +43,7 @@ export default function ExpenseEntry() {
     });
 
     function handleSubmit(): void {
-        console.log("submit called");
+        console.log("submit called. here is the form data:", formData);
     }
 
     // const handleSubmit = (event) => {
@@ -52,7 +61,7 @@ export default function ExpenseEntry() {
                 <Col>
                     <Form.Group controlId="expenseCategory">
                         <Form.Label>Category</Form.Label>
-                        <Form.Select value={formData.category} onChange={handleCategoryChange} aria-label="expense category selection">
+                        <Form.Select name="category" value={formData.category} onChange={handleChange} aria-label="expense category selection">
                             <option>Select a category</option>
                             {categoryOptions}
                         </Form.Select>
@@ -62,7 +71,7 @@ export default function ExpenseEntry() {
                 <Col>
                     <Form.Group controlId="expenseAmount">
                         <Form.Label>Amount</Form.Label>
-                        <Form.Control type="number" placeholder="$0.00" />
+                        <Form.Control name="amount" value={formData.amount} onChange={handleChange} type="number" placeholder="$0.00" />
                     </Form.Group>
                 </Col>
             </Row>
@@ -73,7 +82,7 @@ export default function ExpenseEntry() {
                 <Col>
                     <Form.Group controlId="expenseDescription">
                         <Form.Label>Description</Form.Label>
-                        <Form.Control as="textarea" rows={3}></Form.Control>
+                        <Form.Control name="description" value={formData.description} onChange={handleChange} as="textarea" rows={3}></Form.Control>
                     </Form.Group>
                 </Col>
             </Row>

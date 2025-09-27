@@ -1,5 +1,5 @@
 import { useEffect, type JSX } from 'react';
-
+  import { useNavigate } from "react-router";
 import { Button, Table } from 'react-bootstrap';
 
 import { type Expense } from "../types/expense";
@@ -10,10 +10,16 @@ import './userExpenseTable.css';
 export default function UserExpenseTable() {
     // const rawJsonData = mockExpenseData;
     // console.log(rawJsonData);
+    const navigate = useNavigate();
     const mockData = mockExpenseData as Expense[];
     useEffect(() => {
         console.log("this is the log from use expense");
     }, [])
+
+    function handleEdit(exp: Expense): void {
+        // console.log("expense passed to handle edit:", exp);
+        navigate("/user/details", {state: {data: exp}});
+    }
 
     const tableData: JSX.Element[] = mockData.map((exp: Expense) => {
         return (
@@ -25,7 +31,7 @@ export default function UserExpenseTable() {
                 <td>{exp.createdAt}</td>
                 <td>{exp.updatedAt}</td>
                 <td>
-                    <Button href='/user/details' variant='secondary'>Edit</Button>
+                    <Button onClick={() => handleEdit(exp)} variant='secondary'>Edit</Button>
                 </td>
             </tr>
         )
