@@ -1,6 +1,6 @@
 import { useEffect, type JSX } from 'react';
-  import { useNavigate } from "react-router";
-import { Button, Table } from 'react-bootstrap';
+import { useNavigate } from "react-router";
+import { Button, Dropdown, Table } from 'react-bootstrap';
 
 import { type Expense } from "../types/expense";
 import mockExpenseData from '../data/mockExpenses.json';
@@ -18,7 +18,7 @@ export default function UserExpenseTable() {
 
     function handleEdit(exp: Expense): void {
         // console.log("expense passed to handle edit:", exp);
-        navigate("/user/details", {state: {data: exp}});
+        navigate("/user/details", { state: { data: exp } });
     }
 
     const tableData: JSX.Element[] = mockData.map((exp: Expense) => {
@@ -41,6 +41,17 @@ export default function UserExpenseTable() {
         <>
             <header id="userTableHeader">
                 <h1>Existing Expenses</h1>
+                <Dropdown>
+                    <Dropdown.Toggle variant="secondary">
+                        Filter By Status
+                    </Dropdown.Toggle>
+
+                    <Dropdown.Menu>
+                        <Dropdown.Item href="#/action-1">Action</Dropdown.Item>
+                        <Dropdown.Item href="#/action-2">Another action</Dropdown.Item>
+                        <Dropdown.Item href="#/action-3">Something else</Dropdown.Item>
+                    </Dropdown.Menu>
+                </Dropdown>
                 <Button href='/user/details' className='my-2 mx-1' variant="primary">Create New</Button>
             </header>
             <Table striped bordered hover>

@@ -1,0 +1,43 @@
+ name: Deploy to S3
+
+  # When to run this workflow
+  on:
+    push:
+      branches:
+        - master  # Triggers on push to master branch
+
+  # Define the job(s) to run
+  jobs:
+    deploy:
+      runs-on: ubuntu-latest  # Use Ubuntu server to run the job
+
+      steps:
+        # Step 1: Get your code from the repository
+        - name: Checkout code
+          uses: actions/checkout@v4  # Official GitHub action to clone repo
+
+        # Step 2: Install Node.js
+        - name: Setup Node.js
+          uses: actions/setup-node@v4
+          with:
+            node-version: '20'  # Specify Node version
+
+        # Step 3: Install your project dependencies
+        - name: Install dependencies
+          run: npm ci  # Like npm install, but faster and more reliable for CI
+
+        # Step 4: Build your React app
+        - name: Build
+          run: npm run build  # Creates the build/client/ folder
+
+        # Step 5: Deploy to S3
+        - name: Deploy to S3
+          uses: jakejarvis/s3-sync-action@master  # Third-party action that syncs files to S3
+          with:
+            args: --delete  # Removes files from S3 that aren't in your build folder
+          env:
+            AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}  # Uses the secrets you added
+            AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+            AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+            AWS_REGION: 'us-west-1'  # Change to your bucket's region
+            SOURCE_DIR: 'build/client'  # The folder to upload

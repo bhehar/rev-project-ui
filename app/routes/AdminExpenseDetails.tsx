@@ -1,25 +1,25 @@
 import { useState } from 'react';
+import { useLocation } from "react-router";
 import { type Expense } from "../types/expense";
 import { Button, Col, Form, Row, InputGroup } from 'react-bootstrap';
 
 // import { type JSX } from 'react';
 
-const mockData: Expense = {
-    "id": "exp1",
-    "employeeID": "EMP001",
-    "status": "new",
-    "createdAt": "2024-01-15T10:30:00Z",
-    "updatedAt": "2024-01-15T10:30:00Z",
-    "category": "transportation",
-    "amount": 45.50,
-    "description": "",
-    "comment": ""
-}
-
 export default function AdminExpenseDetails() {
     console.log("expense entry component rendered");
     // const [validated, setValidated] = useState(false);
-    const [formData, setFormData] = useState(mockData);
+    const location = useLocation();
+    const expense = location.state?.data as Expense;
+    const [formData, setFormData] = useState({
+        employeeID: expense?.employeeID,
+        status: expense?.status,
+        category: expense?.category,
+        amount: expense?.amount,
+        createdAt: expense?.createdAt,
+        updatedAt: expense?.updatedAt,
+        description: expense?.description,
+        comment: expense?.comment
+    });
 
 
     function handleApprove(): void {
@@ -35,7 +35,7 @@ export default function AdminExpenseDetails() {
     }
 
     function handleComment(e: React.ChangeEvent<HTMLInputElement>): void {
-        console.log("inside handle comment", e)
+        // console.log("inside handle comment", e)
         console.log(e.target);
         setFormData({
             ...formData,

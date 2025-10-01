@@ -1,23 +1,28 @@
 import { useEffect, type JSX } from 'react';
 import { type Expense } from "../types/expense";
+import { useNavigate } from "react-router";
 import mockExpenseData from '../data/mockExpenses.json';
 import Button from 'react-bootstrap/Button';
 
 import Table from 'react-bootstrap/Table';
 
 export default function AdminExpenseTable() {
-
+    const navigate = useNavigate();
     const mockData = mockExpenseData as Expense[];
     useEffect(() => {
         console.log("this is the log from  Admin Expense Table");
     }, [])
 
     function handleApprove(id: string) {
-        console.log('approve button clicked');
+        console.log('approve button clicked', id);
     }
 
     function handleDeny() {
         console.log('deny button clicked');
+    }
+
+    function handleComment(exp: Expense) {
+        navigate("/admin/details", {state: {data: exp}})
     }
     const tableData: JSX.Element[] = mockData.map((exp: Expense) => {
         return (
@@ -31,7 +36,7 @@ export default function AdminExpenseTable() {
                 <td>
                     <Button onClick={() => handleApprove(exp.id)} size="sm" variant="success">Approve</Button>
                     <Button onClick={handleDeny} size="sm" variant="danger">Deny</Button>
-                    <Button href="/admin/details" size="sm" variant="secondary">Comment</Button>
+                    <Button onClick={() => handleComment(exp)} size="sm" variant="secondary">Comment</Button>
                 </td>
             </tr>
         )
