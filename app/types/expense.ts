@@ -1,10 +1,11 @@
 
 export type ExpenseCategory = 'transportation' | 'food' | 'lodging' | 'equipment' | 'other';
 
+export type Status = 'new' | 'pending' | 'approved' | 'denied'
 export interface Expense {
     id: string,
     employeeID: string,
-    status: 'new' | 'pending' | 'approved' | 'denied',
+    status: Status,
     createdAt: string,
     updatedAt: string,
     category: ExpenseCategory,

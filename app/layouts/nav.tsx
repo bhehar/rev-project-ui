@@ -10,6 +10,7 @@ export default function NavLayout() {
           <Nav className="me-auto">
             <Nav.Link as={NavLink} to="/user/table">User Table</Nav.Link>
             <Nav.Link as={NavLink} to="/admin/table">Admin Table</Nav.Link>
+            <Nav.Link as={NavLink} to="/admin/manage-users">User Management</Nav.Link>
           </Nav>
         </Container>
       </Navbar>

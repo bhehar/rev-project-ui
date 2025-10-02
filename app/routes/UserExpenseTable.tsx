@@ -1,27 +1,53 @@
-import { useEffect, type JSX } from 'react';
+import { useState, type JSX } from 'react';
 import { useNavigate } from "react-router";
 import { Button, Dropdown, Table } from 'react-bootstrap';
 
-import { type Expense } from "../types/expense";
+import { type Expense, type Status } from "../types/expense";
 import mockExpenseData from '../data/mockExpenses.json';
 
-import './userExpenseTable.css';
+import './table.css';
+
+const statusOptions: Record<Status, string> = {
+    'new': 'New',
+    'pending': 'Pending',
+    'approved': 'Approved',
+    'denied': 'Denied',
+}
 
 export default function UserExpenseTable() {
     // const rawJsonData = mockExpenseData;
     // console.log(rawJsonData);
+    const [statusFilter, setStatusFiler] = useState<Status | null>(null);
     const navigate = useNavigate();
     const mockData = mockExpenseData as Expense[];
-    useEffect(() => {
-        console.log("this is the log from use expense");
-    }, [])
+    // useEffect(() => {
+    //     console.log("this is the log from use expense");
+    // }, [])
 
+    let filteredData;
+    if (statusFilter) {
+        filteredData = mockData.filter( (exp: Expense)  => exp.status == statusFilter)
+    } else {
+        filteredData = mockData;
+    }
+
+   
     function handleEdit(exp: Expense): void {
         // console.log("expense passed to handle edit:", exp);
         navigate("/user/details", { state: { data: exp } });
     }
 
-    const tableData: JSX.Element[] = mockData.map((exp: Expense) => {
+    function handleFilter(status: Status | null) {
+        setStatusFiler(status);
+    }
+
+
+
+    const ddOptions: JSX.Element[] = Object.entries(statusOptions).map(([key, value]) => {
+        return (<Dropdown.Item key={key} as="button" onClick={() => handleFilter(key as Status)}>{value}</Dropdown.Item>);
+    });
+
+    const tableData: JSX.Element[] = filteredData.map((exp: Expense) => {
         return (
             <tr key={exp.id}>
                 <td>{exp.employeeID}</td>
@@ -39,17 +65,16 @@ export default function UserExpenseTable() {
 
     return (
         <>
-            <header id="userTableHeader">
+            <header className="table-header">
                 <h1>Existing Expenses</h1>
-                <Dropdown>
+                <Dropdown className="my-2">
                     <Dropdown.Toggle variant="secondary">
                         Filter By Status
                     </Dropdown.Toggle>
 
                     <Dropdown.Menu>
-                        <Dropdown.Item href="#/action-1">Action</Dropdown.Item>
-                        <Dropdown.Item href="#/action-2">Another action</Dropdown.Item>
-                        <Dropdown.Item href="#/action-3">Something else</Dropdown.Item>
+                        <Dropdown.Item key={'all'} onClick={() => handleFilter(null)}>All</Dropdown.Item>
+                        {ddOptions}
                     </Dropdown.Menu>
                 </Dropdown>
                 <Button href='/user/details' className='my-2 mx-1' variant="primary">Create New</Button>
