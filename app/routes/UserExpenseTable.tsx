@@ -5,7 +5,7 @@ import { Button, Dropdown, Table } from 'react-bootstrap';
 import { type Expense, type Status } from "../types/expense";
 import mockExpenseData from '../data/mockExpenses.json';
 
-import './table.css';
+import './app.css';
 
 const statusOptions: Record<Status, string> = {
     'new': 'New',

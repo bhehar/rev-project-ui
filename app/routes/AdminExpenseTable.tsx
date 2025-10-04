@@ -4,7 +4,7 @@ import { useNavigate } from "react-router";
 import mockExpenseData from '../data/mockExpenses.json';
 import { Button, Dropdown, Table } from 'react-bootstrap';
 
-import './table.css';
+import './app.css';
 
 const statusOptions: Record<Status, string> = {
     'new': 'New',

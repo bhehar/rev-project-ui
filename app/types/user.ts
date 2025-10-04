@@ -3,7 +3,7 @@ export default interface User {
     employeeId: string,
     firstName: string,
     lastName: string,
-    manager: string // probably not necessary
     email: string,
+    password: string,
     jobTitle: string,
 }

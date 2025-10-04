@@ -5,6 +5,7 @@ import {
   Scripts,
   ScrollRestoration,
 } from "react-router";
+import { AuthProvider } from './AuthContext.tsx';
 import "bootstrap/dist/css/bootstrap.min.css";
 
 export default function Root() {
@@ -15,7 +16,9 @@ export default function Root() {
         <Links />
       </head>
       <body>
-        <Outlet />
+        <AuthProvider>
+          <Outlet />
+        </AuthProvider>
         <ScrollRestoration />
         <Scripts />
       </body>

@@ -1,40 +1,63 @@
-import { useState, type JSX } from 'react';
-import { Button, Dropdown, Table } from 'react-bootstrap';
+import { type JSX } from 'react';
+import { useRevalidator } from 'react-router';
+import { Button, Table } from 'react-bootstrap';
+import type { Route } from "./routes/+types/AdminUserMgmt";
 
 import type User from "../types/user";
-import mockUserData from '../data/mockUsers.json';
+// import mockUserData from '../data/mockUsers.json';
 
-import './table.css';
+import './app.css';
 
-const jobTitleOptions: Record<string, string> = {
-    'Software Engineer': 'Software Engineer',
-    'Product Manager': 'Product Manager',
-    'Designer': 'Designer',
-    'Data Analyst': 'Data Analyst',
+// const jobTitleOptions: Record<string, string> = {
+//     'Software Engineer': 'Software Engineer',
+//     'Product Manager': 'Product Manager',
+//     'Designer': 'Designer',
+//     'Data Analyst': 'Data Analyst',
+// }
+
+export async function clientLoader() {
+    const res = await fetch(`${import.meta.env.VITE_API_URL}/api/user`);
+    const users = await res.json();
+    // console.log('clientLoader params:' + params);
+    return users;
 }
 
-export default function AdminUserMgmt() {
-    const [jobTitleFilter, setJobTitleFilter] = useState<string | null>(null);
-    const mockData = mockUserData as User[];
+export default function AdminUserMgmt({ loaderData }: Route.ComponentProps) {
+    // console.log(loaderData);
+    // const [jobTitleFilter, setJobTitleFilter] = useState<string | null>(null);
+    // const mockData = loaderData as User[];
 
-    let filteredData;
-    if (jobTitleFilter) {
-        filteredData = mockData.filter((user: User) => user.jobTitle === jobTitleFilter)
-    } else {
-        filteredData = mockData;
-    }
+    const revalidator = useRevalidator();
 
-    function handleDelete(user: User): void {
+    const filteredData = loaderData as User[];
+    // if (jobTitleFilter) {
+    //     filteredData = mockData.filter((user: User) => user.jobTitle === jobTitleFilter)
+    // } else {
+    //     filteredData = mockData;
+    // }
+
+    async function handleDelete(user: User) {
         console.log("Deleting user:", user);
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/api/user/${user.id}`, {
+            method: 'DELETE'
+        })
+
+        if (!res.ok) {
+            const error = await res.text();
+            console.error('Delete failed:', error);
+            alert('Failed to delete user');
+            return;
+        }
+        revalidator.revalidate();
     }
 
-    function handleFilter(jobTitle: string | null) {
-        setJobTitleFilter(jobTitle);
-    }
+    // function handleFilter(jobTitle: string | null) {
+    //     setJobTitleFilter(jobTitle);
+    // }
 
-    const ddOptions: JSX.Element[] = Object.entries(jobTitleOptions).map(([key, value]) => {
-        return (<Dropdown.Item key={key} as="button" onClick={() => handleFilter(key)}>{value}</Dropdown.Item>);
-    });
+    // const ddOptions: JSX.Element[] = Object.entries(jobTitleOptions).map(([key, value]) => {
+    //     return (<Dropdown.Item key={key} as="button" onClick={() => handleFilter(key)}>{value}</Dropdown.Item>);
+    // });
 
     const tableData: JSX.Element[] = filteredData.map((user: User) => {
         return (
@@ -44,7 +67,6 @@ export default function AdminUserMgmt() {
                 <td>{user.lastName}</td>
                 <td>{user.email}</td>
                 <td>{user.jobTitle}</td>
-                <td>{user.manager}</td>
                 <td>
                     <Button onClick={() => handleDelete(user)} variant='danger'>Delete</Button>
                 </td>
@@ -56,7 +78,7 @@ export default function AdminUserMgmt() {
         <>
             <header className="table-header">
                 <h1>Manage Users</h1>
-                <Dropdown className="my-2">
+                {/* <Dropdown className="my-2">
                     <Dropdown.Toggle variant="secondary">
                         Filter By Job Title
                     </Dropdown.Toggle>
@@ -65,7 +87,7 @@ export default function AdminUserMgmt() {
                         <Dropdown.Item key={'all'} onClick={() => handleFilter(null)}>All</Dropdown.Item>
                         {ddOptions}
                     </Dropdown.Menu>
-                </Dropdown>
+                </Dropdown> */}
             </header>
             <Table striped bordered hover>
                 <thead>
@@ -75,7 +97,6 @@ export default function AdminUserMgmt() {
                         <th>Last Name</th>
                         <th>Email</th>
                         <th>Job Title</th>
-                        <th>Manager</th>
                         <th>Action</th>
                     </tr>
                 </thead>
