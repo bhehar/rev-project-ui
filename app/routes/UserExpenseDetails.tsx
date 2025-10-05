@@ -1,26 +1,23 @@
 import { useState } from 'react';
-import { useLocation } from "react-router";
+import { useLocation, useNavigate, useParams } from "react-router";
 import { Button, Col, Form, Row } from 'react-bootstrap';
 
 // import { type JSX } from 'react';
 import { type Expense, type ExpenseCategory } from '../types/expense.ts';
 
-const categoryDisplay: Record<ExpenseCategory, string> = {
-    'transportation': "Transportation",
-    'food': 'Food',
-    'lodging': 'Lodging',
-    'equipment': 'Equipment',
-    'other': 'Other',
-};
+import { useAuth } from '../AuthContext.tsx';
+const categories: ExpenseCategory[] = ['TRANSPORTATION', 'FOOD', 'LODGING', 'EQUIPMENT', 'OTHER'];
 
 export default function UserExpenseDetails() {
-    console.log("expense entry component rendered");
+    // console.log("expense entry component rendered");
     const location = useLocation();
     const expense = location.state?.data as Expense;
-
-    if (expense) {
-        console.log("expense in UserExpenseDetails", expense);
-    }
+    const { mode } = useParams();
+    const auth = useAuth();
+    const navigate = useNavigate();
+    // if (expense) {
+    //     console.log("expense in UserExpenseDetails", expense);
+    // }
     // const [validated, setValidated] = useState(false);
     const [formData, setFormData] = useState({
         category: expense?.category,
@@ -30,20 +27,42 @@ export default function UserExpenseDetails() {
 
 
     function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>): void {
-        console.log("inside handleCategoryChange");
-        const {name, value} = e.target;
+        // console.log("inside handleCategoryChange");
+        const { name, value } = e.target;
         setFormData({
             ...formData,
             [name]: value
         });
     }
 
-    const categoryOptions = Object.entries(categoryDisplay).map(([cat, display]) => {
-        return <option key={cat} value={cat}>{display}</option>;
+    const categoryOptions = categories.map((cat) => {
+        return <option key={cat} value={cat}>{cat}</option>;
     });
 
-    function handleSubmit(): void {
+    async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+        event.preventDefault();
         console.log("submit called. here is the form data:", formData);
+        let url = `${import.meta.env.VITE_API_URL}/api/expense`
+        url = mode === 'new' ? url : url + '/' + expense.id;
+        const method = mode === 'new' ? 'POST' : 'PUT';
+
+        const body = mode === 'new' ? { ...formData, employeeId: auth.user?.employeeId } : formData;
+        console.log(formData);
+        const resp = await fetch(url, {
+            method,
+            body: JSON.stringify(body),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (!resp.ok) {
+            console.log('expense update error with status:', resp.status);
+            alert('update expense failed with status: ' + resp.status);
+            return
+        }
+
+        navigate('/user/table');
     }
 
     // const handleSubmit = (event) => {
@@ -56,7 +75,7 @@ export default function UserExpenseDetails() {
     //     setValidated(true);
     // };
     return (
-        <Form action={handleSubmit}>
+        <Form onSubmit={handleSubmit}>
             <Row className="m-3">
                 <Col>
                     <Form.Group controlId="expenseCategory">
@@ -94,5 +113,5 @@ export default function UserExpenseDetails() {
                 </Col>
             </Row>
         </Form>
-    );
+    )
 }

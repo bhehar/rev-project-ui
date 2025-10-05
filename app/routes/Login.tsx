@@ -1,10 +1,13 @@
 import { Button, Form } from 'react-bootstrap';
+import { useNavigate } from 'react-router';
+import { useAuth } from '../AuthContext.tsx';
 
 import './app.css';
 
 export default function LoginPage() {
-
-    function handleLogin(event: React.FormEvent<HTMLFormElement>) {
+    const auth = useAuth();
+    const navigate = useNavigate();
+    async function handleLogin(event: React.FormEvent<HTMLFormElement>) {
         event.preventDefault();
 
         const formData = new FormData(event.currentTarget);
@@ -12,6 +15,11 @@ export default function LoginPage() {
         const password = formData.get('password') as string;
 
         console.log(employeeId, password);
+
+        const user = await auth.login(employeeId, password)
+        if (user) {
+            navigate('/');
+        }
     }
 
     return (

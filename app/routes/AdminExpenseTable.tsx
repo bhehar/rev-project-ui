@@ -1,31 +1,38 @@
 import { useState, type JSX } from 'react';
 import { type Expense, type Status } from "../types/expense";
-import { useNavigate } from "react-router";
-import mockExpenseData from '../data/mockExpenses.json';
+import { useNavigate, useRevalidator } from "react-router";
+// import mockExpenseData from '../data/mockExpenses.json';
 import { Button, Dropdown, Table } from 'react-bootstrap';
-
+import { useAuth } from '../AuthContext.tsx';
+import type { Route } from "./routes/+types/AdminExpenseTable.ts";
 import './app.css';
 
-const statusOptions: Record<Status, string> = {
-    'new': 'New',
-    'pending': 'Pending',
-    'approved': 'Approved',
-    'denied': 'Denied',
+const statusOptions: Status[] = ['NEW', 'APPROVED', 'DENIED']
+
+export async function clientLoader() {
+    const resp = await fetch(`${import.meta.env.VITE_API_URL}/api/expense`)
+    if (!resp.ok) {
+        alert('unable to fetch expense data');
+        throw new Error('expense fetch failed with status: ' + resp.status);
+    }
+    return await resp.json();
 }
 
-export default function AdminExpenseTable() {
+export default function AdminExpenseTable({ loaderData }: Route.ComponentProps) {
     const navigate = useNavigate();
+    const auth = useAuth();
+    const revalidator = useRevalidator();
     const [statusFilter, setStatusFiler] = useState<Status | null>(null);
-    const mockData = mockExpenseData as Expense[];
+    const expenseData = loaderData as Expense[];
     // useEffect(() => {
     //     console.log("this is the log from  Admin Expense Table");
     // }, [])
 
     let filteredData;
     if (statusFilter) {
-        filteredData = mockData.filter((exp: Expense) => exp.status == statusFilter)
+        filteredData = expenseData.filter((exp: Expense) => exp.status == statusFilter)
     } else {
-        filteredData = mockData;
+        filteredData = expenseData;
     }
 
     function handleFilter(status: Status | null) {
@@ -33,42 +40,47 @@ export default function AdminExpenseTable() {
     }
 
 
-    function handleApprove(id: string) {
-        console.log('approve button clicked', id);
-    }
+    async function handleAction(id: string, newStatus: Status) {
+        const resp = await fetch(`${import.meta.env.VITE_API_URL}/api/expense/${id}/status`, {
+            method: 'PUT',
+            body: JSON.stringify({
+                status: newStatus,
+                employeeId: auth.user?.employeeId,
+            }),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
 
-    function handleDeny() {
-        console.log('deny button clicked');
-    }
-
-    function handleComment(exp: Expense) {
-        navigate("/admin/details", { state: { data: exp } })
+        if (!resp.ok) {
+            console.log(`expense status update to ${newStatus} failed with code:`, resp.status);
+            alert('unable to update expense status');
+            return
+        }
+        revalidator.revalidate();
     }
 
     function isActionable(status: Status): boolean {
-        if (status === 'approved' || status === 'denied') {
-            return true;
-        }
-        return false;
+        return status === 'NEW';
     }
 
-    const ddOptions: JSX.Element[] = Object.entries(statusOptions).map(([key, value]) => {
-        return (<Dropdown.Item key={key} as="button" onClick={() => handleFilter(key as Status)}>{value}</Dropdown.Item>);
+    const ddOptions: JSX.Element[] = statusOptions.map(op => {
+        return (<Dropdown.Item key={op} as="button" onClick={() => handleFilter(op)}>{op}</Dropdown.Item>);
     });
 
     const tableData: JSX.Element[] = filteredData.map((exp: Expense) => {
         return (
             <tr key={exp.id}>
-                <td>{exp.employeeID}</td>
+                <td>{exp.employeeId}</td>
                 <td>{exp.status}</td>
                 <td>{exp.category}</td>
                 <td>${exp.amount}</td>
-                <td>{exp.createdAt}</td>
-                <td>{exp.updatedAt}</td>
+                <td>{new Date(exp.createdAt).toLocaleString()}</td>
+                <td>{new Date(exp.updatedAt).toLocaleString()}</td>
                 <td>
-                    <Button onClick={() => handleApprove(exp.id)} size="sm" variant="success" disabled={isActionable(exp.status)}>Approve</Button>
-                    <Button onClick={handleDeny} size="sm" variant="danger" disabled={isActionable(exp.status)}>Deny</Button>
-                    <Button onClick={() => handleComment(exp)} size="sm" variant="secondary" disabled={isActionable(exp.status)}>Comment</Button>
+                    <Button onClick={() => handleAction(exp.id, 'APPROVED')} size="sm" variant="success" disabled={!isActionable(exp.status)}>Approve</Button>
+                    <Button onClick={() => handleAction(exp.id, 'DENIED')} size="sm" variant="danger" disabled={!isActionable(exp.status)}>Deny</Button>
+                    {/* <Button onClick={() => handleComment(exp)} size="sm" variant="secondary" disabled={isActionable(exp.status)}>Comment</Button> */}
                 </td>
             </tr>
         )

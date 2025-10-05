@@ -11,7 +11,7 @@ export default function AdminExpenseDetails() {
     const location = useLocation();
     const expense = location.state?.data as Expense;
     const [formData, setFormData] = useState({
-        employeeID: expense?.employeeID,
+        employeeID: expense?.employeeId,
         status: expense?.status,
         category: expense?.category,
         amount: expense?.amount,

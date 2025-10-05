@@ -1,7 +1,7 @@
 import { type JSX } from 'react';
 import { useRevalidator } from 'react-router';
 import { Button, Table } from 'react-bootstrap';
-import type { Route } from "./routes/+types/AdminUserMgmt";
+import type { Route } from "./routes/+types/AdminUserMgmt.ts";
 
 import type User from "../types/user";
 // import mockUserData from '../data/mockUsers.json';
@@ -16,7 +16,7 @@ import './app.css';
 // }
 
 export async function clientLoader() {
-    const res = await fetch(`${import.meta.env.VITE_API_URL}/api/user`);
+    const res = await fetch(`${import.meta.env.VITE_API_URL}/api/user?role=USER`);
     const users = await res.json();
     // console.log('clientLoader params:' + params);
     return users;

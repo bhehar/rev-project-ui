@@ -4,6 +4,7 @@ export default interface User {
     firstName: string,
     lastName: string,
     email: string,
+    role: 'ADMIN' | 'USER',
     password: string,
     jobTitle: string,
 }
