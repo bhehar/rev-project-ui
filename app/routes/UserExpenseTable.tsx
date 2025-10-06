@@ -9,12 +9,7 @@ import type { Route } from "./routes/+types/UserExpenseTable.tsx";
 import type User from '../types/user.ts';
 import './app.css';
 
-const statusOptions: Record<Status, string> = {
-    'new': 'New',
-    'pending': 'Pending',
-    'approved': 'Approved',
-    'denied': 'Denied',
-}
+const statusOptions: Status[] = ['NEW', 'APPROVED', 'DENIED']
 
 export async function clientLoader() {
     const dataStr = localStorage.getItem('user');
@@ -60,8 +55,8 @@ export default function UserExpenseTable({ loaderData }: Route.ComponentProps) {
 
 
 
-    const ddOptions: JSX.Element[] = Object.entries(statusOptions).map(([key, value]) => {
-        return (<Dropdown.Item key={key} as="button" onClick={() => handleFilter(key as Status)}>{value}</Dropdown.Item>);
+    const ddOptions: JSX.Element[] = statusOptions.map( op => {
+        return (<Dropdown.Item key={op} as="button" onClick={() => handleFilter(op)}>{op}</Dropdown.Item>);
     });
 
     const tableData: JSX.Element[] = filteredData.map((exp: Expense) => {
